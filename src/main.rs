@@ -1,4 +1,5 @@
 mod routes;
+mod middlewares;
 
 use routes::router;
 
