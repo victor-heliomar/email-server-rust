@@ -17,10 +17,8 @@ impl Middleware for CorsMiddleware {
     where
         Chain: FnOnce(State) -> Pin<Box<HandlerFuture>>,
     {
-        dotenv::dotenv().ok();
-
         let allowed_origins = env::var("WHITELIST").unwrap_or_else(|_| "*".to_string());
-        
+
         let header_map = HeaderMap::borrow_from(&state);
 
         let origin_request = match header_map.get(ORIGIN) {
