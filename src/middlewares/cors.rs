@@ -2,6 +2,7 @@ use std::pin::Pin;
 
 use futures::{FutureExt, TryFutureExt, future};
 use gotham::handler::HandlerFuture;
+use gotham::hyper::{StatusCode, Response};
 use gotham::hyper::header::{HeaderMap, ORIGIN};
 use gotham::middleware::Middleware;
 use gotham::prelude::*;
@@ -21,13 +22,13 @@ impl Middleware for CorsMiddleware {
 
         let header_map = HeaderMap::borrow_from(&state);
 
-        let origin_request = match header_map.get(ORIGIN) {
+        let requests_origin = match header_map.get(ORIGIN) {
             Some(origin) => origin.to_str().unwrap().to_string(),
             None => "".to_string(),
         };
 
-        let origin_response = if allowed_origins.contains(",") {
-            allowed_origins.split(',').find(|origin| origin == &origin_request).unwrap_or("").to_owned()
+        let response_allowed_origin = if allowed_origins.contains(",") {
+            allowed_origins.split(',').find(|origin| origin.trim() == &requests_origin).unwrap_or("").to_owned()
         } else {
             allowed_origins
         };
@@ -42,7 +43,7 @@ impl Middleware for CorsMiddleware {
                     "Access-Control-Allow-Origin",
                     format!(
                         "{}",
-                        origin_response,
+                        response_allowed_origin,
                     )
                     .parse()
                     .unwrap(),
