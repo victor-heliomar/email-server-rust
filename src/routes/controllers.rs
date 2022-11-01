@@ -31,8 +31,6 @@ struct MailContent {
 }
 
 pub fn send_mail(mut state: State) -> (State, &'static str) {
-    dotenv::dotenv().ok();
-
     let query_param = SendMailQueryStringExtractor::take_from(&mut state);
 
     let email_config = MailContent {
