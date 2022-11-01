@@ -27,8 +27,8 @@ impl Middleware for CorsMiddleware {
                 None => "".to_string(),
             };
 
-            let response_allowed_origin = if allowed_origins.contains(",") {
-                allowed_origins.split(',').find(|origin| origin.trim() == &requests_origin).unwrap_or("").to_owned()
+            let response_allowed_origin = if allowed_origins.contains(',') {
+                allowed_origins.split(',').find(|origin| origin.trim() == requests_origin).unwrap_or("").to_owned()
             } else {
                 allowed_origins
             };
